@@ -11,7 +11,7 @@ var config = require('../../config/environment');
 
 // Gets a list of Users
 export function index(req, res) {
-	db.query('SELECT * FROM AMX_USER', function (err, row) {
+	db.query('SELECT * FROM amx_user', function (err, row) {
 		if (err) {
 			console.log(err);
 		}
@@ -23,7 +23,7 @@ export function index(req, res) {
 export function postApiEndpoint(req, res, next) {
 
   if (req.params.apiEndpoint === "login")
-  db.query('select * from AMX_USER where lower(EMAIL)=lower(?) and PASSWORD=? LIMIT 1', 
+  db.query('select * from amx_user where lower(EMAIL)=lower(?) and PASSWORD=? LIMIT 1', 
     [req.body.postUser, req.body.postPassword], 
     function(err, row) {
 
@@ -37,7 +37,7 @@ export function postApiEndpoint(req, res, next) {
       });
     }
     else if (row === null || row === undefined || row.length === 0) {
-      db.query('update AMX_USER set login_failed = login_failed + 1 where lower(EMAIL)=lower(?)', 
+      db.query('update amx_user set login_failed = login_failed + 1 where lower(EMAIL)=lower(?)', 
         [req.body.postUser]);
       res.json({ 
           userAuth: false,
@@ -47,7 +47,7 @@ export function postApiEndpoint(req, res, next) {
     }
     else {
     	row = row[0];
-      db.query('update AMX_USER set login_success = login_success + 1 where lower(EMAIL)=lower(?)', 
+      db.query('update amx_user set login_success = login_success + 1 where lower(EMAIL)=lower(?)', 
         [req.body.postUser]);
 
       // When authenticated create token
@@ -68,7 +68,7 @@ export function postApiEndpoint(req, res, next) {
 
   if (req.params.apiEndpoint === "changePassword") {
   
-    db.query('update AMX_USER set PASSWORD=?, MODIfIED=CURRENT_TIMESTAMP where lower(EMAIL)=lower(?)', 
+    db.query('update amx_user set PASSWORD=?, MODIfIED=CURRENT_TIMESTAMP where lower(EMAIL)=lower(?)', 
       [req.body.postPassword, req.body.postUser], 
       function(err, row) {
       if(err !== null) {
@@ -86,7 +86,7 @@ export function postApiEndpoint(req, res, next) {
 
   if (req.params.apiEndpoint === "saveMessageConfig") {
   
-    db.query('update AMX_USER set MESSAGE_CONFIG=? where lower(EMAIL)=lower(?)', 
+    db.query('update amx_user set MESSAGE_CONFIG=? where lower(EMAIL)=lower(?)', 
       [JSON.stringify(req.body.userMessageConfig), req.body.userName], 
       function(err, row) {
       if(err !== null) {

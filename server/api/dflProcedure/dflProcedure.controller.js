@@ -331,7 +331,7 @@ export function postApiEndpoint(req, res, next) {
 			// new procedure 
 			// console.log("Insert:");
 			// console.log(req.body);
-			db.query(`insert into DFL_PROCEDURE (OPCO_ID, TYPE, SUB_TYPE, NAME, DESCRIPTION, STATUS_CODE, SCHEDULE_ID) 
+			db.query(`insert into dfl_procedure (OPCO_ID, TYPE, SUB_TYPE, NAME, DESCRIPTION, STATUS_CODE, SCHEDULE_ID) 
 								values (?,?,?,?,?,?,?)`,
 								[req.body.OPCO_ID, req.body.TYPE, req.body.SUB_TYPE, req.body.NAME, req.body.DESCRIPTION, req.body.STATUS_CODE, req.body.SCHEDULE_ID],
 								function (err, row) {
@@ -368,7 +368,7 @@ export function postApiEndpoint(req, res, next) {
 
 										switch (req.body.TYPE) {
 											case 'J':
-																db.query(`insert into DFL_JOB_CATALOGUE (PROCEDURE_ID, CODE_LOCATION, JOB_PARAMETERS) 
+																db.query(`insert into dfl_job_catalogue (PROCEDURE_ID, CODE_LOCATION, JOB_PARAMETERS) 
 																					values (?,?,?)`,
 																					[procedureId, req.body.CODE_LOCATION, req.body.JOB_PARAMETERS],
 																					function (err, row) {
@@ -383,7 +383,7 @@ export function postApiEndpoint(req, res, next) {
 																);
 																break;
 											case 'C':
-																db.query(`insert into DFL_CONTROL_CATALOGUE (PROCEDURE_ID, CONTROL_TYPE, CONTROL_ASSERTION, START_DATE, END_DATE, ESCALATION_NOTES) 
+																db.query(`insert into dfl_control_catalogue (PROCEDURE_ID, CONTROL_TYPE, CONTROL_ASSERTION, START_DATE, END_DATE, ESCALATION_NOTES) 
 																					values (?,?,?,?,?,?)`,
 																					[procedureId, req.body.CONTROL_TYPE, JSON.stringify(req.body.CONTROL_ASSERTION), (req.body.START_DATE?moment(req.body.START_DATE).format("YYYY-MM-DD"):null), (req.body.END_DATE?moment(req.body.END_DATE).format("YYYY-MM-DD"):null), req.body.ESCALATION_NOTES],
 																					function (err, row) {
@@ -398,7 +398,7 @@ export function postApiEndpoint(req, res, next) {
 																);
 																break;
 											case 'S':
-																db.query(`insert into DFL_SOLUTION_CATALOGUE (PROCEDURE_ID, SOX_RELEVANT, SOLUTION_CONTACT_ID, DOCU_LINK) 
+																db.query(`insert into dfl_solution_catalogue (PROCEDURE_ID, SOX_RELEVANT, SOLUTION_CONTACT_ID, DOCU_LINK) 
 																					values (?,?,?,?)`,
 																					[procedureId, req.body.SOX_RELEVANT, req.body.SOLUTION_CONTACT_ID, req.body.DOCU_LINK],
 																					function (err, row) {
@@ -445,7 +445,7 @@ export function postApiEndpoint(req, res, next) {
 			// update
 			// console.log("Update:");
 			// console.log(req.body);  		
-			db.query(`update DFL_PROCEDURE set OPCO_ID=?, TYPE=?, SUB_TYPE=?, NAME=?, DESCRIPTION=?, STATUS_CODE=?, SCHEDULE_ID=? 
+			db.query(`update dfl_procedure set OPCO_ID=?, TYPE=?, SUB_TYPE=?, NAME=?, DESCRIPTION=?, STATUS_CODE=?, SCHEDULE_ID=? 
 								where PROCEDURE_ID = ?`,
 								[req.body.OPCO_ID, req.body.TYPE, req.body.SUB_TYPE, req.body.NAME, req.body.DESCRIPTION, req.body.STATUS_CODE, req.body.SCHEDULE_ID, req.body.PROCEDURE_ID],
 								function (err, row) {
@@ -481,7 +481,7 @@ export function postApiEndpoint(req, res, next) {
 
 										switch (req.body.TYPE) {
 											case 'J':
-																db.query(`update DFL_JOB_CATALOGUE set CODE_LOCATION=?, JOB_PARAMETERS=?
+																db.query(`update dfl_job_catalogue set CODE_LOCATION=?, JOB_PARAMETERS=?
 																					where PROCEDURE_ID = ?`,
 																					[req.body.CODE_LOCATION, req.body.JOB_PARAMETERS, req.body.PROCEDURE_ID],
 																					function (err, row) {
@@ -496,7 +496,7 @@ export function postApiEndpoint(req, res, next) {
 																);
 																break;
 											case 'C':
-																db.query(`update DFL_CONTROL_CATALOGUE set CONTROL_TYPE=?, CONTROL_ASSERTION=?, START_DATE=?, END_DATE=?, ESCALATION_NOTES = ?
+																db.query(`update dfl_control_catalogue set CONTROL_TYPE=?, CONTROL_ASSERTION=?, START_DATE=?, END_DATE=?, ESCALATION_NOTES = ?
 																					where PROCEDURE_ID = ?`,
 																					[req.body.CONTROL_TYPE, JSON.stringify(req.body.CONTROL_ASSERTION), (req.body.START_DATE?moment(req.body.START_DATE).format("YYYY-MM-DD"):null), (req.body.END_DATE?moment(req.body.END_DATE).format("YYYY-MM-DD"):null), req.body.ESCALATION_NOTES, req.body.PROCEDURE_ID],
 																					function (err, row) {
@@ -511,7 +511,7 @@ export function postApiEndpoint(req, res, next) {
 																);
 																break;
 											case 'S':
-																db.query(`update DFL_SOLUTION_CATALOGUE set SOX_RELEVANT=?, SOLUTION_CONTACT_ID=?, DOCU_LINK=? 
+																db.query(`update dfl_solution_catalogue set SOX_RELEVANT=?, SOLUTION_CONTACT_ID=?, DOCU_LINK=? 
 																					where PROCEDURE_ID=?`,
 																					[req.body.SOX_RELEVANT, req.body.SOLUTION_CONTACT_ID, req.body.DOCU_LINK, req.body.PROCEDURE_ID],
 																					function (err, row) {

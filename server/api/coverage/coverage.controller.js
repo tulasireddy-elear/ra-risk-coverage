@@ -16,7 +16,7 @@ export function getApiEndpoint(req, res, next) {
 						    bp.BUSINESS_PROCESS, 
 						    bp.DESCRIPTION, 
 						    bp.SOURCE
-						from CVG_BUSINESS_PROCESS bp
+						from cvg_business_process bp
 						`, 
     	[],
     	function (err, row) {
@@ -55,8 +55,8 @@ export function getApiEndpoint(req, res, next) {
 						    bp.DESCRIPTION, 
 						    bsp.BUSINESS_SUB_PROCESS_ID, 
 						    bsp.BUSINESS_SUB_PROCESS
-						from CVG_BUSINESS_PROCESS bp
-						left join CVG_BUSINESS_SUB_PROCESS bsp on bsp.BUSINESS_PROCESS_ID = bp.BUSINESS_PROCESS_ID
+						from cvg_business_process bp
+						left join cvg_business_sub_process bsp on bsp.BUSINESS_PROCESS_ID = bp.BUSINESS_PROCESS_ID
 						`, 
     	[],
     	function (err, row) {
@@ -105,11 +105,11 @@ export function getApiEndpoint(req, res, next) {
 						    r.RISK_DESCRIPTION, 
 						    r.SOURCE,
 						    'N' SELECTED,
-						    (select count(*) from CVG_SUB_RISK where RISK_ID = r.RISK_ID) SUB_RISK_COUNT,
-						    (select count(distinct srml.MEASURE_ID) from CVG_SUB_RISK sr join CVG_SUB_RISK_MEASURE_LINK srml on srml.SUB_RISK_ID = sr.SUB_RISK_ID where sr.RISK_ID = r.RISK_ID) MEASURES_COUNT
-							from CVG_BUSINESS_PROCESS bp
-							left join CVG_BUSINESS_SUB_PROCESS bsp on bsp.BUSINESS_PROCESS_ID = bp.BUSINESS_PROCESS_ID
-							left join CVG_RISK r on r.BUSINESS_SUB_PROCESS_ID = bsp.BUSINESS_SUB_PROCESS_ID
+						    (select count(*) from cvg_sub_risk where RISK_ID = r.RISK_ID) SUB_RISK_COUNT,
+						    (select count(distinct srml.MEASURE_ID) from cvg_sub_risk sr join cvg_sub_risk_measure_link srml on srml.SUB_RISK_ID = sr.SUB_RISK_ID where sr.RISK_ID = r.RISK_ID) MEASURES_COUNT
+							from cvg_business_process bp
+							left join cvg_business_sub_process bsp on bsp.BUSINESS_PROCESS_ID = bp.BUSINESS_PROCESS_ID
+							left join cvg_risk r on r.BUSINESS_SUB_PROCESS_ID = bsp.BUSINESS_SUB_PROCESS_ID
 							order by bp.BUSINESS_PROCESS_ID, r.RISK_ID
 						`, 
     	[],
@@ -136,10 +136,10 @@ export function getApiEndpoint(req, res, next) {
 						    r.RISK_DESCRIPTION, 
 						    r.SOURCE,
 						    'N' SELECTED,
-						    (select count(*) from CVG_SUB_RISK where RISK_ID = r.RISK_ID) SUB_RISK_COUNT
-						from CVG_BUSINESS_PROCESS bp
-						left join CVG_BUSINESS_SUB_PROCESS bsp on bsp.BUSINESS_PROCESS_ID = bp.BUSINESS_PROCESS_ID
-						left join CVG_RISK r on r.BUSINESS_SUB_PROCESS_ID = bsp.BUSINESS_SUB_PROCESS_ID
+						    (select count(*) from cvg_sub_risk where RISK_ID = r.RISK_ID) SUB_RISK_COUNT
+						from cvg_business_process bp
+						left join cvg_business_sub_process bsp on bsp.BUSINESS_PROCESS_ID = bp.BUSINESS_PROCESS_ID
+						left join cvg_risk r on r.BUSINESS_SUB_PROCESS_ID = bsp.BUSINESS_SUB_PROCESS_ID
 						where r.RISK_ID = ?
 						`, 
     	[req.query.riskId],
@@ -163,7 +163,7 @@ export function getApiEndpoint(req, res, next) {
 						    sr.REQUIRED,
 						    sr.SOURCE,
 						    'N' SELECTED
-						from CVG_SUB_RISK sr
+						from cvg_sub_risk sr
 						where sr.RISK_ID = ?
 						order by sr.SUB_RISK_ID
 						`, 
@@ -188,7 +188,7 @@ export function getApiEndpoint(req, res, next) {
 						    sr.RELEVANT, 
 						    sr.REQUIRED, 
 						    sr.SOURCE						
-						  from CVG_SUB_RISK sr
+						  from cvg_sub_risk sr
 						`, 
     	[],
     	function (err, row) {
@@ -206,18 +206,18 @@ export function getApiEndpoint(req, res, next) {
 								KEY_RISK_AREA_ID, 
 						    KEY_RISK_AREA, 
 						    KEY_RISK_AREA_DESCRIPTION,
-						    (select count(*) from CVG_RISK_KEY_RISK_AREA_LINK where KEY_RISK_AREA_ID = a.KEY_RISK_AREA_ID) RISK_COUNT,
-						    (select count(*) from CVG_PRODUCT_GROUP_KEY_RISK_AREA_LINK where KEY_RISK_AREA_ID = a.KEY_RISK_AREA_ID) PRODUCT_GROUP_COUNT,
+						    (select count(*) from cvg_risk_key_risk_area_link where KEY_RISK_AREA_ID = a.KEY_RISK_AREA_ID) RISK_COUNT,
+						    (select count(*) from cvg_product_group_key_risk_area_link where KEY_RISK_AREA_ID = a.KEY_RISK_AREA_ID) PRODUCT_GROUP_COUNT,
 						    (select 
 									count(distinct a.BUSINESS_PROCESS_ID) 
-									from CVG_BUSINESS_SUB_PROCESS a
+									from cvg_business_sub_process a
 									where a.BUSINESS_SUB_PROCESS_ID in (
 										select r.BUSINESS_SUB_PROCESS_ID
 									    from cvg_risk r
-									    join CVG_RISK_KEY_RISK_AREA_LINK rkr on rkr.RISK_ID = r.RISK_ID 
+									    join cvg_risk_key_risk_area_link rkr on rkr.RISK_ID = r.RISK_ID 
 									    where rkr.KEY_RISK_AREA_ID = a.KEY_RISK_AREA_ID
 								)) BP_COUNT
-							from CVG_KEY_RISK_AREA a
+							from cvg_key_risk_area a
 								`,
     	[],
     	function (err, row) {
@@ -232,10 +232,10 @@ export function getApiEndpoint(req, res, next) {
   } 
   else if (req.params.apiEndpoint === "getKeyRiskArea") {
     db.query(`select 
-								KEY_RISK_AREA_ID, 
+							KEY_RISK_AREA_ID, 
 						    KEY_RISK_AREA, 
 						    KEY_RISK_AREA_DESCRIPTION
-							from CVG_KEY_RISK_AREA
+							from cvg_key_risk_area
 							where KEY_RISK_AREA_ID = ?
 							`,
     	[req.query.keyRiskAreaId],
@@ -284,11 +284,11 @@ export function getApiEndpoint(req, res, next) {
 								r.RISK_DESCRIPTION, 
 								r.SOURCE,
 								'N' SELECTED,
-								(select count(*) from CVG_SUB_RISK where RISK_ID = r.RISK_ID) SUB_RISK_COUNT,
-								(select count(*) from CVG_RISK_MEASURE_LINK where RISK_ID = r.RISK_ID) MEASURES_COUNT
-							from CVG_BUSINESS_PROCESS bp
-							left join CVG_BUSINESS_SUB_PROCESS bsp on bsp.BUSINESS_PROCESS_ID = bp.BUSINESS_PROCESS_ID
-							left join CVG_RISK r on r.BUSINESS_SUB_PROCESS_ID = bsp.BUSINESS_SUB_PROCESS_ID
+								(select count(*) from cvg_sub_risk where RISK_ID = r.RISK_ID) SUB_RISK_COUNT,
+								(select count(*) from cvg_risk_measure_link where RISK_ID = r.RISK_ID) MEASURES_COUNT
+							from cvg_business_process bp
+							left join cvg_business_sub_process bsp on bsp.BUSINESS_PROCESS_ID = bp.BUSINESS_PROCESS_ID
+							left join cvg_risk r on r.BUSINESS_SUB_PROCESS_ID = bsp.BUSINESS_SUB_PROCESS_ID
 							join cvg_risk_key_risk_area_link ralnk on ralnk.RISK_ID = r.RISK_ID
 							where ralnk.KEY_RISK_AREA_ID = ?
 							order by bp.BUSINESS_PROCESS_ID, r.RISK_ID
@@ -318,13 +318,13 @@ export function getApiEndpoint(req, res, next) {
 						    sum(case when coverage > 0 then 1 else 0 end) RISK_NODES_WITH_CONTROLS,
 						    sum(coverage)/count(*) COVERAGE,
 						    ceil((sum(coverage)/count(*) +1)  / 10) * 10 CSS_CLASS
-							from CVG_KEY_RISK_AREA cra
-							left join CVG_RISK_KEY_RISK_AREA_LINK cral on cra.key_risk_area_id = cral.key_risk_area_id 
-							left join CVG_PRODUCT_GROUP_KEY_RISK_AREA_LINK pgl on cra.key_risk_area_id = pgl.key_risk_area_id 
-							left join CVG_RISK_NODE rn on rn.risk_id = cral.risk_id and rn.product_segment_id in (select PRODUCT_SEGMENT_ID from cvg_product_segment where PRODUCT_GROUP_ID = pgl.PRODUCT_GROUP_ID)
-							left join CVG_RISK r on r.risk_id = rn.risk_id
-							left join CVG_BUSINESS_SUB_PROCESS bsp on bsp.business_sub_process_id = r.business_sub_process_id
-							left join CVG_BUSINESS_PROCESS bp on bp.business_process_id = bsp.business_process_id
+							from cvg_key_risk_area cra
+							left join cvg_risk_key_risk_area_link cral on cra.key_risk_area_id = cral.key_risk_area_id 
+							left join cvg_product_group_key_risk_area_link pgl on cra.key_risk_area_id = pgl.key_risk_area_id 
+							left join cvg_risk_node rn on rn.risk_id = cral.risk_id and rn.product_segment_id in (select PRODUCT_SEGMENT_ID from cvg_product_segment where PRODUCT_GROUP_ID = pgl.PRODUCT_GROUP_ID)
+							left join cvg_risk r on r.risk_id = rn.risk_id
+							left join cvg_business_sub_process bsp on bsp.business_sub_process_id = r.business_sub_process_id
+							left join cvg_business_process bp on bp.business_process_id = bsp.business_process_id
 							where ifnull(rn.OPCO_ID, ?) = ?
 							group by 								
 								cra.KEY_RISK_AREA_ID, 
@@ -356,10 +356,10 @@ export function getApiEndpoint(req, res, next) {
 						    sum(case when coverage > 0 then 1 else 0 end) RISK_NODES_WITH_CONTROLS,
 						    sum(coverage)/count(*) COVERAGE,
 						    ceil((sum(coverage)/count(*) +1)  / 10) * 10 CSS_CLASS
-							from CVG_KEY_RISK_AREA cra
-							left join CVG_RISK_KEY_RISK_AREA_LINK cral on cra.key_risk_area_id = cral.key_risk_area_id
-							left join CVG_PRODUCT_GROUP_KEY_RISK_AREA_LINK pgl on cra.key_risk_area_id = pgl.key_risk_area_id 
-							left join CVG_RISK_NODE rn on rn.risk_id = cral.risk_id and rn.product_segment_id in (select PRODUCT_SEGMENT_ID from cvg_product_segment where PRODUCT_GROUP_ID = pgl.PRODUCT_GROUP_ID)
+							from cvg_key_risk_area cra
+							left join cvg_risk_key_risk_area_link cral on cra.key_risk_area_id = cral.key_risk_area_id
+							left join cvg_product_group_key_risk_area_link pgl on cra.key_risk_area_id = pgl.key_risk_area_id 
+							left join cvg_risk_node rn on rn.risk_id = cral.risk_id and rn.product_segment_id in (select PRODUCT_SEGMENT_ID from cvg_product_segment where PRODUCT_GROUP_ID = pgl.PRODUCT_GROUP_ID)
 							where ifnull(rn.OPCO_ID, ?) = ?
 							group by
 								cra.KEY_RISK_AREA_ID, 
@@ -641,11 +641,11 @@ export function getApiEndpoint(req, res, next) {
 								bsp.BUSINESS_SUB_PROCESS source,
 								concat(bp.BUSINESS_PROCESS, ' ') target, 
 								ifnull(sum(cvgGetRiskNodeRPN(rn.RISK_NODE_ID)),0) value
-							from CVG_RISK_NODE rn
+							from cvg_risk_node rn
 							join cvg_product_segment ps on ps.PRODUCT_SEGMENT_ID = rn.PRODUCT_SEGMENT_ID
-							join CVG_RISK r on r.RISK_ID = rn.RISK_ID
-							join CVG_BUSINESS_SUB_PROCESS bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
-							join CVG_BUSINESS_PROCESS bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
+							join cvg_risk r on r.RISK_ID = rn.RISK_ID
+							join cvg_business_sub_process bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
+							join cvg_business_process bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
 							left join amx_system s on s.SYSTEM_ID = rn.SYSTEM_ID
 							where 1=1
 								and ifnull(rn.PRODUCT_SEGMENT_ID, '%') like ?
@@ -659,11 +659,11 @@ export function getApiEndpoint(req, res, next) {
 								concat(bp.BUSINESS_PROCESS, ' ') source,
 								ifnull(s.NAME, 'No system assigned') target,
 								ifnull(sum(cvgGetRiskNodeRPN(rn.RISK_NODE_ID)), 0) value
-							from CVG_RISK_NODE rn
+							from cvg_risk_node rn
 							join cvg_product_segment ps on ps.PRODUCT_SEGMENT_ID = rn.PRODUCT_SEGMENT_ID
-							join CVG_RISK r on r.RISK_ID = rn.RISK_ID
-							join CVG_BUSINESS_SUB_PROCESS bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
-							join CVG_BUSINESS_PROCESS bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
+							join cvg_risk r on r.RISK_ID = rn.RISK_ID
+							join cvg_business_sub_process bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
+							join cvg_business_process bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
 							left join amx_system s on s.SYSTEM_ID = rn.SYSTEM_ID
 							where 1=1
 								and ifnull(rn.PRODUCT_SEGMENT_ID, '%') like ?
@@ -677,11 +677,11 @@ export function getApiEndpoint(req, res, next) {
 								ifnull(s.NAME, 'No system assigned') source,
 							    'Covered' target,
 								ifnull(sum(cvgGetRiskNodeRPN(rn.RISK_NODE_ID) * rn.COVERAGE/100),0) value
-							from CVG_RISK_NODE rn
+							from cvg_risk_node rn
 							join cvg_product_segment ps on ps.PRODUCT_SEGMENT_ID = rn.PRODUCT_SEGMENT_ID
-							join CVG_RISK r on r.RISK_ID = rn.RISK_ID
-							join CVG_BUSINESS_SUB_PROCESS bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
-							join CVG_BUSINESS_PROCESS bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
+							join cvg_risk r on r.RISK_ID = rn.RISK_ID
+							join cvg_business_sub_process bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
+							join cvg_business_process bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
 							left join amx_system s on s.SYSTEM_ID = rn.SYSTEM_ID
 							where 1=1
 								and ifnull(rn.PRODUCT_SEGMENT_ID, '%') like ?
@@ -694,11 +694,11 @@ export function getApiEndpoint(req, res, next) {
 								ifnull(s.NAME, 'No system assigned') source,
 							    'Not covered' target,
 								ifnull(sum(cvgGetRiskNodeRPN(rn.RISK_NODE_ID) * (1-rn.COVERAGE/100)),0) value
-							from CVG_RISK_NODE rn
+							from cvg_risk_node rn
 							join cvg_product_segment ps on ps.PRODUCT_SEGMENT_ID = rn.PRODUCT_SEGMENT_ID
-							join CVG_RISK r on r.RISK_ID = rn.RISK_ID
-							join CVG_BUSINESS_SUB_PROCESS bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
-							join CVG_BUSINESS_PROCESS bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
+							join cvg_risk r on r.RISK_ID = rn.RISK_ID
+							join cvg_business_sub_process bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
+							join cvg_business_process bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
 							left join amx_system s on s.SYSTEM_ID = rn.SYSTEM_ID
 							where 1=1
 								and ifnull(rn.PRODUCT_SEGMENT_ID, '%') like ?
@@ -731,12 +731,12 @@ export function getApiEndpoint(req, res, next) {
 								pg.LOB source,
 							  'Covered' target,
 								ifnull(sum(cvgGetRiskNodeValue(rn.RISK_NODE_ID) * rn.COVERAGE/100),0) value
-							from CVG_RISK_NODE rn
+							from cvg_risk_node rn
 							join cvg_product_segment ps on ps.PRODUCT_SEGMENT_ID = rn.PRODUCT_SEGMENT_ID
 							join cvg_product_group pg on pg.PRODUCT_GROUP_ID = ps.PRODUCT_GROUP_ID
-							join CVG_RISK r on r.RISK_ID = rn.RISK_ID
-							join CVG_BUSINESS_SUB_PROCESS bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
-							join CVG_BUSINESS_PROCESS bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
+							join cvg_risk r on r.RISK_ID = rn.RISK_ID
+							join cvg_business_sub_process bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
+							join cvg_business_process bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
 							left join amx_system s on s.SYSTEM_ID = rn.SYSTEM_ID
 							where rn.OPCO_ID = ? 
 							group by
@@ -748,12 +748,12 @@ export function getApiEndpoint(req, res, next) {
 								pg.LOB source,
 							  'Not covered' target,
 								ifnull(sum(cvgGetRiskNodeValue(rn.RISK_NODE_ID) * (1-rn.COVERAGE/100)),0) value
-							from CVG_RISK_NODE rn
+							from cvg_risk_node rn
 							join cvg_product_segment ps on ps.PRODUCT_SEGMENT_ID = rn.PRODUCT_SEGMENT_ID
 							join cvg_product_group pg on pg.PRODUCT_GROUP_ID = ps.PRODUCT_GROUP_ID
-							join CVG_RISK r on r.RISK_ID = rn.RISK_ID
-							join CVG_BUSINESS_SUB_PROCESS bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
-							join CVG_BUSINESS_PROCESS bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
+							join cvg_risk r on r.RISK_ID = rn.RISK_ID
+							join cvg_business_sub_process bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
+							join cvg_business_process bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
 							left join amx_system s on s.SYSTEM_ID = rn.SYSTEM_ID
 							where rn.OPCO_ID = ? 
 							group by
@@ -765,12 +765,12 @@ export function getApiEndpoint(req, res, next) {
 								'Covered' target,
 								bp.BUSINESS_PROCESS target, 
 								ifnull(sum(cvgGetRiskNodeValue(rn.RISK_NODE_ID) * rn.COVERAGE/100),0) value
-							from CVG_RISK_NODE rn
+							from cvg_risk_node rn
 							join cvg_product_segment ps on ps.PRODUCT_SEGMENT_ID = rn.PRODUCT_SEGMENT_ID
 							join cvg_product_group pg on pg.PRODUCT_GROUP_ID = ps.PRODUCT_GROUP_ID
-							join CVG_RISK r on r.RISK_ID = rn.RISK_ID
-							join CVG_BUSINESS_SUB_PROCESS bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
-							join CVG_BUSINESS_PROCESS bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
+							join cvg_risk r on r.RISK_ID = rn.RISK_ID
+							join cvg_business_sub_process bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
+							join cvg_business_process bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
 							left join amx_system s on s.SYSTEM_ID = rn.SYSTEM_ID
 							where rn.OPCO_ID = ?
 							group by 	
@@ -782,12 +782,12 @@ export function getApiEndpoint(req, res, next) {
 								'Not covered' target,
 								bp.BUSINESS_PROCESS target, 
 								ifnull(sum(cvgGetRiskNodeValue(rn.RISK_NODE_ID) * (1-rn.COVERAGE/100)),0) value
-							from CVG_RISK_NODE rn
+							from cvg_risk_node rn
 							join cvg_product_segment ps on ps.PRODUCT_SEGMENT_ID = rn.PRODUCT_SEGMENT_ID
 							join cvg_product_group pg on pg.PRODUCT_GROUP_ID = ps.PRODUCT_GROUP_ID
-							join CVG_RISK r on r.RISK_ID = rn.RISK_ID
-							join CVG_BUSINESS_SUB_PROCESS bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
-							join CVG_BUSINESS_PROCESS bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
+							join cvg_risk r on r.RISK_ID = rn.RISK_ID
+							join cvg_business_sub_process bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
+							join cvg_business_process bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
 							left join amx_system s on s.SYSTEM_ID = rn.SYSTEM_ID
 							where rn.OPCO_ID = ?
 							group by 	
@@ -1218,11 +1218,11 @@ export function postApiEndpoint(req, res, next) {
 									join v_cvg_control c on c.CONTROL_ID = rnc.CONTROL_ID
 									where RISK_NODE_ID = rn.RISK_NODE_ID
 									group by RISK_NODE_ID) CONTROLS_LIST
-							from CVG_RISK_NODE rn
+							from cvg_risk_node rn
 							join cvg_product_segment ps on ps.PRODUCT_SEGMENT_ID = rn.PRODUCT_SEGMENT_ID
-							join CVG_RISK r on r.RISK_ID = rn.RISK_ID
-							join CVG_BUSINESS_SUB_PROCESS bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
-							join CVG_BUSINESS_PROCESS bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
+							join cvg_risk r on r.RISK_ID = rn.RISK_ID
+							join cvg_business_sub_process bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
+							join cvg_business_process bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
 							left join amx_system s on s.SYSTEM_ID = rn.SYSTEM_ID
 							where 1=1
 								and ifnull(rn.PRODUCT_SEGMENT_ID, '%') like ?
@@ -1275,11 +1275,11 @@ export function postApiEndpoint(req, res, next) {
 								(select count(*) from cvg_risk_node_control where RISK_NODE_ID = rn.RISK_NODE_ID) CONTROL_COUNT,
 								cvgGetRiskNodeCoverage(rn.RISK_NODE_ID) COVERAGE,
 								cvgGetRiskNodeMeasureCoverage(rn.RISK_NODE_ID) MEASURE_COVERAGE
-							from CVG_RISK_NODE rn
+							from cvg_risk_node rn
 							join cvg_product_segment ps on ps.PRODUCT_SEGMENT_ID = rn.PRODUCT_SEGMENT_ID
-							join CVG_RISK r on r.RISK_ID = rn.RISK_ID
-							join CVG_BUSINESS_SUB_PROCESS bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
-							join CVG_BUSINESS_PROCESS bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
+							join cvg_risk r on r.RISK_ID = rn.RISK_ID
+							join cvg_business_sub_process bsp on bsp.BUSINESS_SUB_PROCESS_ID = r.BUSINESS_SUB_PROCESS_ID 
+							join cvg_business_process bp on bp.BUSINESS_PROCESS_ID = bsp.BUSINESS_PROCESS_ID 
 							left join amx_system s on s.SYSTEM_ID = rn.SYSTEM_ID
 							where 1=1
 								and rn.RISK_NODE_ID=?								
@@ -1676,7 +1676,7 @@ export function postApiEndpoint(req, res, next) {
 
   }
 	else if (req.params.apiEndpoint === "saveRiskNodeComment") {
-    db.query(`update CVG_RISK_NODE set COMMENT = ? where RISK_NODE_ID = ?`, 
+    db.query(`update cvg_risk_node set COMMENT = ? where RISK_NODE_ID = ?`, 
     	[req.body.COMMENT,req.body.RISK_NODE_ID],
     	function (err, row) {
 	      if(err !== null) {
@@ -1943,7 +1943,6 @@ export function postApiEndpoint(req, res, next) {
 									  next(err);
 									}
 									else {
-									  console.log(row);
 										res.json({success: true});
 									}
 								});  		
@@ -1974,7 +1973,6 @@ export function postApiEndpoint(req, res, next) {
 									  next(err);
 									}
 									else {
-									  console.log(row);
 										res.json({success: true});
 									}
 								});  		
